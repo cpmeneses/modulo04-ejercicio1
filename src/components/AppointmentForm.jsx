@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 
-const AppointmentForm = ({ doctors }) => {
+import { useAppContext } from '../context/AppProvider';
+
+const AppointmentForm = () => {
+  const { doctors } = useAppContext();
+
   const [formData, setFormData] = useState({
     patientName: '',
     doctor: '',
     date: '',
   });
+
+  // Crear referencias para interactuar con los campos del formulario
+  const nameInputRef = useRef(null);
+  const formRef = useRef(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -17,15 +26,28 @@ const AppointmentForm = ({ doctors }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Datos de la cita:', formData);
+
+    // Reinicia el formulario utilizando la referencia
+    formRef.current.reset();
+    setFormData({ patientName: '', doctor: '', date: '' });
+
+    // Vuelve a enfocar el campo de nombre del paciente
+    nameInputRef.current.focus();
   };
 
+  // Enfocar automáticamente el campo de nombre del paciente cuando se monta el componente
+  React.useEffect(() => {
+    nameInputRef.current.focus();
+  }, []);
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form ref={formRef} onSubmit={handleSubmit}>
       <label>
         Nombre del Paciente:
         <input
           type="text"
           name="patientName"
+          ref={nameInputRef} // Asignar la referencia
           value={formData.patientName}
           onChange={handleChange}
           required
@@ -56,5 +78,16 @@ const AppointmentForm = ({ doctors }) => {
     </form>
   );
 };
+
+// Validación de PropTypes para los doctores
+AppointmentForm.propTypes = {
+  doctors: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired, // El nombre del doctor es obligatorio
+      specialty: PropTypes.string, // La especialidad es opcional
+    })
+  ),
+};
+
 
 export default AppointmentForm;

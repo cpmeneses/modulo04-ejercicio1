@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const DoctorCard = ({ name, specialty, experience }) => {
   return (
@@ -8,6 +9,12 @@ const DoctorCard = ({ name, specialty, experience }) => {
       <p>Años de Experiencia: {experience}</p>
     </div>
   );
+};
+
+DoctorCard.propTypes = {
+  name: PropTypes.string.isRequired,
+  specialty: PropTypes.string.isRequired,
+  experience: PropTypes.number.isRequired,
 };
 
 export default DoctorCard;
