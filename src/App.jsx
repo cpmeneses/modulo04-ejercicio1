@@ -3,6 +3,9 @@ import DoctorList from './components/DoctorList';
 import ServiceList from './components/ServiceList';
 import AppointmentForm from './components/AppointmentForm';
 import withLoading from './hocs/withLoading';
+import HomeView from './views/HomeView';
+import AppointmentView from './views/AppointmentView';
+import TeamView from './views/TeamView';
 
 const App = () => {
   const onRenderCallback = (
@@ -14,12 +17,7 @@ const App = () => {
   };
 
   //const [doctors, setDoctors] = useState([]);
-  const [services, setServices] = useState([]);
-
-  useEffect(() => {
-    const fetchedServices = ['Consulta General', 'Pediatría', 'Cardiología'];
-    setServices(fetchedServices);
-  }, []);
+  const [view, setView] = useState("home");
 
   const Title = (props) => <h1>{props.title}</h1>;
   const TitleWithLoading = withLoading(Title); //HOC
@@ -29,21 +27,18 @@ const App = () => {
       <div className="hospital-system">
         <TitleWithLoading isLoading={false} title="Sistema del Hospital" />
 
-        {/* Fragment */}
-        <React.Fragment>
-          <h2>Doctores</h2>
-          <DoctorList />
-        </React.Fragment>
+        <nav>
+          {/* Buttons to change View */}
+          <button onClick={() => setView("home")}>Inicio</button>
+          <button onClick={() => setView("appointment")}>Agendar Cita</button>
+          <button onClick={() => setView("team")}>Equipo</button>
+        </nav>
 
-        <React.Fragment>
-          <h2>Servicios Disponibles</h2>
-          <ServiceList services={services} />
-        </React.Fragment>
+        {/* Show the current View */}
+        {view === "home" && <HomeView />}
+        {view === "appointment" && <AppointmentView />}
+        {view === "team" && <TeamView />}
 
-        <React.Fragment>
-          <h2>Agendar Cita</h2>
-          <AppointmentForm />
-        </React.Fragment>
       </div>
     </Profiler>
   );
